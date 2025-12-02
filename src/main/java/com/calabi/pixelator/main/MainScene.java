@@ -56,6 +56,7 @@ import com.calabi.pixelator.view.dialog.OutlineDialog;
 import com.calabi.pixelator.view.dialog.ResizeDialog;
 import com.calabi.pixelator.view.dialog.RotateDialog;
 import com.calabi.pixelator.view.dialog.SettingsDialog;
+import com.calabi.pixelator.view.dialog.AboutDialog;
 import com.calabi.pixelator.view.dialog.StretchDialog;
 import com.calabi.pixelator.view.editor.IWC;
 import com.calabi.pixelator.view.editor.ImageEditor;
@@ -256,8 +257,14 @@ public class MainScene extends Scene {
         toolMenu.addItem(EXTRACT_PALETTE, e -> extractPalette(), IWC.get().imageSelectedProperty());
         toolMenu.addItem(CHANGE_PALETTE, e -> changePalette(), IWC.get().imageSelectedProperty());
 
+        BasicMenu helpMenu = new BasicMenu("Help");
+        helpMenu.addItem(ABOUT, e -> {
+            AboutDialog dialog = new AboutDialog();
+            dialog.showAndFocus();
+        });
+
         menuBar.getMenus()
-                .setAll(projectMenu, fileMenu, editMenu, viewMenu, imageMenu, animationMenu, paletteMenu, toolMenu);
+            .setAll(projectMenu, fileMenu, editMenu, viewMenu, imageMenu, animationMenu, paletteMenu, toolMenu, helpMenu);
         return menuBar;
     }
 

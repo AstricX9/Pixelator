@@ -70,7 +70,8 @@ public enum Action {
     UP("Up", false, false, false, KeyCode.UP),
     ZOOM_IN("Zoom in", false, false, false, KeyCode.PLUS),
     ZOOM_OUT("Zoom out", false, false, false, KeyCode.MINUS),
-    ZOOM_ZERO("Zoom to neutral", false, false, false, KeyCode.DIGIT0);
+    ZOOM_ZERO("Zoom to neutral", false, false, false, KeyCode.DIGIT0),
+    ABOUT("About...");
 
     static Set<Action> BETA_ACTIONS = CollectionUtil.toSet();
 
