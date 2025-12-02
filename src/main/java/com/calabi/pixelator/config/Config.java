@@ -25,6 +25,13 @@ public enum Config {
     SCREEN_X(ConfigMode.GLOBAL, ConfigType.DOUBLE, 0d),
     SCREEN_Y(ConfigMode.GLOBAL, ConfigType.DOUBLE, 0d),
     THEME(ConfigMode.GLOBAL, ConfigType.STRING, Theme.BRIGHT.name()),
+    RESOURCE_PACK_DIRECTORY(ConfigMode.GLOBAL, ConfigType.STRING, ""),
+    DEFAULT_RESOURCE_RESOLUTION(ConfigMode.GLOBAL, ConfigType.INT, 16),
+    EXPORT_ZIP_BY_DEFAULT(ConfigMode.GLOBAL, ConfigType.BOOLEAN, false),
+    AUTOSAVE(ConfigMode.GLOBAL, ConfigType.BOOLEAN, false),
+    BLOCK_PREVIEW_LIGHTING(ConfigMode.GLOBAL, ConfigType.DOUBLE, 50d),
+    LAYER_LIMIT(ConfigMode.GLOBAL, ConfigType.INT, 64),
+    UNDO_HISTORY_SIZE(ConfigMode.GLOBAL, ConfigType.INT, 100),
 
     // Project config
     ALL_FRAMES(ConfigMode.PROJECT, ConfigType.BOOLEAN, true),
