@@ -60,7 +60,17 @@ public class ActionManager {
     }
 
     public static BooleanBinding getCondition(Action key) {
-        return controlMap.get(key).disableProperty().not();
+        MenuItem item = controlMap.get(key);
+        if (item == null) {
+            // If no menu item is registered for this action, treat it as always enabled
+            return new BooleanBinding() {
+                @Override
+                protected boolean computeValue() {
+                    return true;
+                }
+            };
+        }
+        return item.disableProperty().not();
     }
 
 }

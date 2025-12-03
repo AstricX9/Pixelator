@@ -36,6 +36,7 @@ import com.calabi.pixelator.file.ImageFile;
 import com.calabi.pixelator.file.PaletteFile;
 import com.calabi.pixelator.file.PixelFile;
 import com.calabi.pixelator.project.Project;
+import com.calabi.pixelator.project.ProjectType;
 import com.calabi.pixelator.ui.control.BasicMenuBar;
 import com.calabi.pixelator.ui.image.WritableImage;
 import com.calabi.pixelator.util.ColorUtil;
@@ -189,7 +190,9 @@ public class MainScene extends Scene {
         projectMenu.addItem(SETTINGS, e -> showSettings());
 
         BasicMenu fileMenu = new BasicMenu("File");
-        fileMenu.addItem(NEW, e -> newImage());
+        MenuItem newTextureItem = new MenuItem("New Texture...");
+        newTextureItem.setOnAction(e -> newImage());
+        fileMenu.getItems().add(newTextureItem);
         fileMenu.addItem(OPEN, e -> openImages());
         fileMenu.addItem(SAVE, e -> IWC.get().saveCurrentFile(),
                 IWC.get().imageSelectedProperty().and(IWC.get().dirtyProperty()));
@@ -269,68 +272,6 @@ public class MainScene extends Scene {
         toolMenu.addItem(EXTRACT_PALETTE, e -> extractPalette(), IWC.get().imageSelectedProperty());
         toolMenu.addItem(CHANGE_PALETTE, e -> changePalette(), IWC.get().imageSelectedProperty());
 
-        BasicMenu resourceMenu = new BasicMenu("Resource Pack");
-        MenuItem newPack = new MenuItem("New Pack...");
-        newPack.setOnAction(e -> {
-            NewPackDialog dialog = new NewPackDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem openPack = new MenuItem("Open Pack...");
-        openPack.setOnAction(e -> {
-            OpenPackDialog dialog = new OpenPackDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem exportPack = new MenuItem("Export / Export All...");
-        exportPack.setOnAction(e -> {
-            ExportAllDialog dialog = new ExportAllDialog();
-            dialog.showAndFocus();
-        });
-        resourceMenu.getItems().addAll(newPack, openPack, exportPack);
-
-        BasicMenu rpTools = new BasicMenu("Tools");
-        MenuItem saveToPack = new MenuItem("Save To Pack...");
-        saveToPack.setOnAction(e -> {
-            SaveToPackDialog dialog = new SaveToPackDialog(null);
-            dialog.showAndFocus();
-        });
-        MenuItem editMcmeta = new MenuItem("Edit pack.mcmeta...");
-        editMcmeta.setOnAction(e -> {
-            PackMcmetaEditorDialog dialog = new PackMcmetaEditorDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem texProps = new MenuItem("Texture Properties...");
-        texProps.setOnAction(e -> {
-            TexturePropertiesDialog dialog = new TexturePropertiesDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem animTimeline = new MenuItem("Animation Timeline...");
-        animTimeline.setOnAction(e -> {
-            AnimationTimelineDialog dialog = new AnimationTimelineDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem blockPreview = new MenuItem("Block Preview (3D)...");
-        blockPreview.setOnAction(e -> {
-            BlockPreviewDialog dialog = new BlockPreviewDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem missingFinder = new MenuItem("Missing Textures Finder...");
-        missingFinder.setOnAction(e -> {
-            MissingTexturesFinderDialog dialog = new MissingTexturesFinderDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem paletteTools = new MenuItem("Palette Tools...");
-        paletteTools.setOnAction(e -> {
-            PaletteToolsDialog dialog = new PaletteToolsDialog();
-            dialog.showAndFocus();
-        });
-        MenuItem modIntegration = new MenuItem("Mod Integration...");
-        modIntegration.setOnAction(e -> {
-            ModIntegrationDialog dialog = new ModIntegrationDialog();
-            dialog.showAndFocus();
-        });
-        rpTools.getItems().addAll(saveToPack, editMcmeta, texProps, animTimeline, blockPreview, missingFinder, paletteTools, modIntegration);
-        resourceMenu.getItems().add(rpTools);
-
         BasicMenu helpMenu = new BasicMenu("Help");
         helpMenu.addItem(ABOUT, e -> {
             AboutDialog dialog = new AboutDialog();
@@ -338,7 +279,7 @@ public class MainScene extends Scene {
         });
 
         menuBar.getMenus()
-            .setAll(fileMenu, projectMenu, resourceMenu, editMenu, viewMenu, imageMenu, animationMenu, paletteMenu, toolMenu, helpMenu);
+            .setAll(fileMenu, projectMenu, editMenu, viewMenu, imageMenu, animationMenu, paletteMenu, toolMenu, helpMenu);
         return menuBar;
     }
 
@@ -385,6 +326,25 @@ public class MainScene extends Scene {
                 Project.set(project);
             }
         }
+    }
+
+    private void openMinecraftPack() {
+        if (!closeAll()) {
+            return;
+        }
+        java.io.File dir = com.calabi.pixelator.file.Category.PROJECT.getDirectory();
+        javafx.stage.FileChooser dialog = new javafx.stage.FileChooser();
+        dialog.setInitialDirectory(dir);
+        dialog.getExtensionFilters().addAll(com.calabi.pixelator.file.Category.PROJECT.getExtensionFiltersToOpen());
+        java.io.File file = dialog.showOpenDialog(Pixelator.getPrimaryStage());
+        if (file == null) {
+            return;
+        }
+        com.calabi.pixelator.file.Category.PROJECT.setDirectory(file.getParent());
+        java.io.File projectDir = file.getParentFile().getParentFile();
+        Project project = new Project(projectDir);
+        project.setType(ProjectType.MINECRAFT_PACK);
+        Project.set(project);
     }
 
     private void openRecentProject() {

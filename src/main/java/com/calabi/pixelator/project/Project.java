@@ -27,6 +27,8 @@ public final class Project {
     private final File propertiesFile;
     private final Properties properties;
 
+    private ProjectType type = ProjectType.NORMAL;
+    private PackMetadata packMetadata;
     private OpenedImagesConfig openedImages;
     private OpenedPalettesConfig openedPalettes;
 
@@ -34,6 +36,17 @@ public final class Project {
         this.location = location;
         this.propertiesFile = new File(location + "/" + FOLDER_NAME + PROPERTIES_FILENAME);
         this.properties = loadConfig();
+
+        String typeValue = properties.getProperty("projectType");
+        if (typeValue != null) {
+            try {
+                type = ProjectType.valueOf(typeValue);
+            } catch (IllegalArgumentException ignored) {
+                type = ProjectType.NORMAL;
+            }
+        } else if (new File(location, "pack.mcmeta").exists()) {
+            type = ProjectType.MINECRAFT_PACK;
+        }
     }
 
     public static Project get() {
@@ -66,6 +79,31 @@ public final class Project {
     public void putConfig(String key, String value) {
         properties.setProperty(key, value);
         saveConfig();
+    }
+
+    public ProjectType getType() {
+        return type;
+    }
+
+    public void setType(ProjectType type) {
+        this.type = type == null ? ProjectType.NORMAL : type;
+        properties.setProperty("projectType", this.type.name());
+        saveConfig();
+    }
+
+    public boolean isMinecraftPack() {
+        return ProjectType.MINECRAFT_PACK.equals(type);
+    }
+
+    public PackMetadata getPackMetadata() {
+        if (packMetadata == null) {
+            packMetadata = new PackMetadata();
+        }
+        return packMetadata;
+    }
+
+    public void setPackMetadata(PackMetadata metadata) {
+        this.packMetadata = metadata;
     }
 
     public Properties readProperties(String filename) {
